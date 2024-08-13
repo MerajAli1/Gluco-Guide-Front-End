@@ -35,9 +35,9 @@ const SignUp = () => {
       const token = res.data.token;
       const loginToken = localStorage.setItem("token", JSON.stringify(token));
       console.log(token, "LOGIN TOKEN");
+      toast.success("Registration Successful");
       setTimeout(() => {
         setLoading(false);
-        toast.success("Registration Successful");
         navigate("/dashboard/patientHome");
       }, 3000);
     } catch (error) {
@@ -86,7 +86,6 @@ const SignUp = () => {
                         <TextField
                           onChange={(e) => setName(e.target.value)}
                           fullWidth
-                          id="outlined-basic"
                           label="Name"
                           variant="outlined"
                         />
@@ -126,7 +125,6 @@ const SignUp = () => {
                           onChange={(e) => setHeight(e.target.value)}
                           fullWidth
                           type="number"
-                          id="outlined-basic"
                           label="Height"
                           variant="outlined"
                         />
@@ -136,7 +134,6 @@ const SignUp = () => {
                         <TextField
                           onChange={(e) => setEmail(e.target.value)}
                           fullWidth
-                          id="outlined-basic"
                           label="Email"
                           variant="outlined"
                         />
@@ -147,7 +144,6 @@ const SignUp = () => {
                           onChange={(e) => setPassword(e.target.value)}
                           fullWidth
                           type="password"
-                          id="outlined-basic"
                           label="Password"
                           variant="outlined"
                         />

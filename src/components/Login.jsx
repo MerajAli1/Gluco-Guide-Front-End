@@ -1,21 +1,63 @@
-import { Button, TextField } from "@mui/material";
-import React from "react";
-import CopyrightIcon from "@mui/icons-material/Copyright";
+import { Button, hexToRgb, TextField } from "@mui/material";
+import React, { useState } from "react";
 import Footer from "./Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
+import { BaseURL } from "../apiBaseURL/BaseURL";
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const loginPatient = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      toast.error("Please fill in all the fields");
+      return;
+      
+    }
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      console.log("token", token);
+
+      const res = await axios.post(
+        `${BaseURL}/login`,
+        {
+          email: email,
+          password: password,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res.data);
+      toast.success("Registration Successful");
+      setTimeout(() => {
+        navigate("/dashboard/patientHome");
+        setLoading(false);
+      }, 3000);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
   return (
     <>
       {/* <!-- Section: Design Block --> */}
-      <section class="">
+      <section className="">
         {/* <!-- Jumbotron --> */}
-        <div class="px-4 py-5 px-md-5 text-center h-100 text-lg-start">
-          <div class="container">
-            <div class="row gx-lg-5 align-items-center">
-              <div class="col-lg-6 mb-5 mb-lg-0">
-                <h1 class="my-5 display-3 fw-bold ls-tight">
+        <div className="px-4 py-5 px-md-5 text-center h-100 text-lg-start">
+          <div className="container">
+            <div className="row gx-lg-5 align-items-center">
+              <div className="col-lg-6 mb-5 mb-lg-0">
+                <h1 className="my-5 display-3 fw-bold ls-tight">
                   Gluco Guide <br />
-                  <span class="text-primary">
+                  <span className="text-primary">
                     Your personal health assistant
                   </span>
                 </h1>
@@ -27,12 +69,12 @@ const Login = () => {
                 </p>
               </div>
 
-              <div class="col-lg-6 mb-5 mb-lg-0">
-                <div class="card shadow">
-                  <div class="card-body py-5 px-md-5">
-                    <form>
+              <div className="col-lg-6 mb-5 mb-lg-0">
+                <div className="card shadow">
+                  <div className="card-body py-5 px-md-5">
+                    <form onSubmit={(e) => loginPatient(e)}>
                       {/* <!-- 2 column grid layout with text inputs for the first and last names --> */}
-                      <div class="row">
+                      <div className="row">
                         <h1 className="display-5 fw-bold ls-tight text-center text-primary">
                           Login
                         </h1>
@@ -41,19 +83,21 @@ const Login = () => {
                         </p>
                       </div>
                       {/* <!-- Email input --> */}
-                      <div data-mdb-input-init class="form-outline mb-4">
+                      <div data-mdb-input-init className="form-outline mb-4">
                         <TextField
+                          onChange={(e) => setEmail(e.target.value)}
                           fullWidth
-                          id="outlined-basic"
+                          type="email"
                           label="Email"
                           variant="outlined"
                         />
                       </div>
                       {/* <!-- Password input --> */}
-                      <div data-mdb-input-init class="form-outline mb-4">
+                      <div data-mdb-input-init className="form-outline mb-4">
                         <TextField
                           fullWidth
-                          id="outlined-basic"
+                          onChange={(e) => setPassword(e.target.value)}
+                          type="password"
                           label="Password"
                           variant="outlined"
                         />
@@ -61,12 +105,13 @@ const Login = () => {
                       {/* <!-- Submit button --> */}
                       <Button
                         variant="contained"
+                        disabled={loading}
                         type="submit"
                         data-mdb-button-init
                         data-mdb-ripple-init
-                        class="btn btn-primary btn-block mb-4"
+                        className="btn btn-primary btn-block mb-4"
                       >
-                        Sign up
+                        {loading ? "Loading..." : "Login"}
                       </Button>
                     </form>
                     <div>
@@ -88,8 +133,22 @@ const Login = () => {
         </div>
         {/* <!-- Jumbotron --> */}
       </section>
+
       {/* //Footer Component */}
       <Footer />
+      {/* Toastify */}
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </>
   );
 };
