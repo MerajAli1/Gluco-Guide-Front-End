@@ -14,9 +14,10 @@ const SignUp = () => {
   const [height, setHeight] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  //Register Patient
   const registerPatient = async (e) => {
     e.preventDefault();
+    //Check if fields are empty
     if (!name || !age || !weight || !email || !password) {
       toast.error("Please fill in all the fields");
       return;

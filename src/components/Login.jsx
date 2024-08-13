@@ -16,27 +16,21 @@ const Login = () => {
     if (!email || !password) {
       toast.error("Please fill in all the fields");
       return;
-      
     }
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      console.log("token", token);
 
-      const res = await axios.post(
-        `${BaseURL}/login`,
-        {
-          email: email,
-          password: password,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const res = await axios.post(`${BaseURL}/login`, {
+        email: email,
+        password: password,
+      });
+      // Setting token in local storage
+      const token = localStorage.setItem(
+        "token",
+        JSON.stringify(res.data.token)
       );
-      console.log(res.data);
-      toast.success("Registration Successful");
+      console.log(res.data.token);
+      toast.success("Login Successful");
       setTimeout(() => {
         navigate("/dashboard/patientHome");
         setLoading(false);
