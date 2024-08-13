@@ -21,6 +21,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import PatientHomePage from '../patientComponents/PatientHomePage';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import SelectDate from '../patientComponents/SelectDate';
+import { Button } from '@mui/material';
 
 const routes = [
   {
@@ -165,18 +166,17 @@ export default function PersistentDrawerLeft() {
         <Divider />
         <Divider />
         <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+         {/* //Logout button */}
+         <Button
+            sx={{ margin: "auto", display: "block", marginTop: "20px" }}
+            onClick={() => {
+              localStorage.removeItem("token");
+              navigate("/signup");
+            }}
+            variant="contained"
+          >
+            Logout
+          </Button>
       </Drawer>
       <Main open={open}>
         <DrawerHeader />

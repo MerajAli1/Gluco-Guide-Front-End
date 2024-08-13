@@ -36,8 +36,8 @@ const SignUp = () => {
       const loginToken = localStorage.setItem("token", JSON.stringify(token));
       console.log(token, "LOGIN TOKEN");
       setTimeout(() => {
-        toast.success("Registration Successful");
         setLoading(false);
+        toast.success("Registration Successful");
         navigate("/dashboard/patientHome");
       }, 3000);
     } catch (error) {
@@ -99,7 +99,7 @@ const SignUp = () => {
                             onChange={(e) => setAge(e.target.value)}
                             autoComplete="given-name"
                             name="age"
-                            required
+                            type="number"
                             fullWidth
                             id="age"
                             label="Age"
@@ -110,8 +110,8 @@ const SignUp = () => {
                         <Grid item xs={12} sm={6}>
                           <TextField
                             onChange={(e) => setWeight(e.target.value)}
-                            required
                             fullWidth
+                            type="number"
                             id="weight"
                             label="Weight"
                             name="weight"
@@ -125,6 +125,7 @@ const SignUp = () => {
                         <TextField
                           onChange={(e) => setHeight(e.target.value)}
                           fullWidth
+                          type="number"
                           id="outlined-basic"
                           label="Height"
                           variant="outlined"
@@ -145,6 +146,7 @@ const SignUp = () => {
                         <TextField
                           onChange={(e) => setPassword(e.target.value)}
                           fullWidth
+                          type="password"
                           id="outlined-basic"
                           label="Password"
                           variant="outlined"
