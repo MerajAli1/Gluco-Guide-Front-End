@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Typography, Box, Button } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import pic from '../../src/assets/home-page-pic.png';
+import homePagepic from '../../src/assets/home-page-pic.png';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
@@ -64,7 +64,7 @@ const Home = () => {
       <Row className="align-items-center">
         <Col xs={12} md={6}>
           <img
-            src={pic}
+            src={homePagepic}
             alt="Placeholder"
             style={imageStyle}
             onMouseEnter={handleMouseEnter}
