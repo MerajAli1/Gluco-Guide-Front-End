@@ -89,9 +89,8 @@ export default function DatePickerComponent() {
   const handleShow = () => setShowModal(true);
 
   //Styles
-
   const containerStyle = {
-    marginTop: "50px",
+    marginTop: "200px",
     padding: "20px",
     borderRadius: "10px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
@@ -183,6 +182,7 @@ export default function DatePickerComponent() {
       console.log("error: ", error);
     }
   };
+  //UseEffect for getting blood pressure history
   useEffect(() => {
     bpHistory();
   }, [refresh]);
