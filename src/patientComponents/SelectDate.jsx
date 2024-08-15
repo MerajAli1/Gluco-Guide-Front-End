@@ -88,6 +88,9 @@ export default function DatePickerComponent() {
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
 
+
+  
+
   //Styles
   const containerStyle = {
     marginTop: "200px",
@@ -154,8 +157,7 @@ export default function DatePickerComponent() {
           },
         }
       );
-      setBpData(true);
-      setRefresh(!refresh);
+      // setRefresh(!refresh);
       console.log(res.data);
       toast.success("Successful");
       setLoading(false);
@@ -168,7 +170,7 @@ export default function DatePickerComponent() {
   const bpHistory = async () => {
     const token = JSON.parse(localStorage.getItem("token"));
     try {
-      setLoading(true);
+      // setLoading(true);
       const res = await axios.get(`${BaseURL}/bphistory`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -176,16 +178,16 @@ export default function DatePickerComponent() {
       });
       console.log(res.data.data);
       setBpHistoryData(res.data.data);
-      setLoading(false);
+      // setLoading(false);
     } catch (error) {
       setLoading(false);
       console.log("error: ", error);
     }
   };
   //UseEffect for getting blood pressure history
-  useEffect(() => {
-    bpHistory();
-  }, [refresh]);
+  // useEffect(() => {
+  //   bpHistory();
+  // }, [refresh]);
   return (
     <div style={containerStyle}>
       <h2 style={headerStyle}>Select a Date</h2>
@@ -206,7 +208,7 @@ export default function DatePickerComponent() {
         </Button>
       </div>
       {/* //Modal */}
-      <Modal className="mt-5" show={showModal} onHide={handleClose}>
+      {/* <Modal className="mt-5" show={showModal} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Selected Date</Modal.Title>
         </Modal.Header>
@@ -261,6 +263,94 @@ export default function DatePickerComponent() {
                 );
               })
             : null}
+        </div>
+      </Modal> */}
+
+      {/* //Modal */}
+      <Modal className="mt-5" show={showModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Selected Date</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className="mb-2">Selected Date: {selectedDate.toDateString()}</p>
+          <form onSubmit={(e) => inputBP(e)}>
+            <TextField
+              fullWidth
+              onChange={(e) => setSystolic(e.target.value)}
+              label="Systolic"
+              type="number"
+              variant="outlined"
+            />
+            <TextField
+              fullWidth
+              onChange={(e) => setDiastolic(e.target.value)}
+              sx={{ mt: 3 }}
+              label="Diastolic"
+              type="number"
+              variant="outlined"
+            />
+            <Button
+              disabled={loading}
+              variant="contained"
+              sx={{ mt: 3, mr: 3 }}
+              type="submit"
+            >
+              {loading ? "Loading..." : "Add Data"}
+            </Button>
+          </form>
+          <Button
+            variant="contained"
+            onClick={bpHistory}
+            sx={{ mt:2}}
+            type="submit"
+          >
+            Show History
+          </Button>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="contained" color="inherit" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+        <div className="text-center" style={modalBodyStyle}>
+          <h1>Patient History</h1>
+          {bpHistoryData
+            .filter((e) => {
+              const entryDate = new Date(e.date).toLocaleDateString("en-CA"); // 'en-CA' ensures the format 'YYYY-MM-DD'
+              const selectedDateStr = selectedDate.toLocaleDateString("en-CA");
+              return entryDate === selectedDateStr;
+            })
+            .map((e, i) => {
+              return (
+                <div className="card" key={i}>
+                  <div className="card-header">History</div>
+                  <div className="card-body">
+                    <h5 className="card-title">
+                      <b>Dated:</b>{" "}
+                      {new Date(e.date).toLocaleDateString("en-CA")}
+                    </h5>
+                    <p className="card-text">
+                      Systolic: {e.systolic} Diastolic: {e.diastolic}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+
+          {bpHistoryData.filter((e) => {
+            const entryDate = new Date(e.date).toLocaleDateString("en-CA");
+            const selectedDateStr = selectedDate.toLocaleDateString("en-CA");
+            return entryDate === selectedDateStr;
+          }).length === 0 && (
+            <div className="card">
+              <div className="card-header">No Data</div>
+              <div className="card-body">
+                <p className="card-text">
+                  No history data found for the selected date.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </Modal>
       {/* Toastify */}

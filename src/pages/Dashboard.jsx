@@ -19,12 +19,16 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import PatientHomePage from "../patientComponents/PatientHomePage";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import SelectDate from "../patientComponents/SelectDate";
 import { Button } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { jwtDecode } from "jwt-decode";
 import PatientProfile from "../patientComponents/PatientProfile";
+import EditProfile from "../patientComponents/EditProfile";
+import axios from "axios";
+import { BaseURL } from "../apiBaseURL/BaseURL";
+import UploadMedicalDocument from "../patientComponents/UploadMedicalDocument";
 
 const routes = [
   {
@@ -37,11 +41,16 @@ const routes = [
     path: "selectDate",
     element: <SelectDate />,
   },
+  {
+    name: "Upload Medical Documents",
+    path: "uploadmedicaldocuments",
+    element: <UploadMedicalDocument />,
+  },
 ];
 
 const profileRoutes = [
   {
-    name: "Profile",
+    name: "Patient Profile",
     path: "profile",
     element: <PatientProfile />,
   },
@@ -96,12 +105,36 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function PersistentDrawerLeft() {
   const theme = useTheme();
+  const [profileData, setProfileData] = React.useState({});
   const [open, setOpen] = React.useState(false);
-
   //Decoding the token
   const token = localStorage.getItem("token");
   const decoded = jwtDecode(token);
 
+  const profileDataLocalStorage = localStorage.setItem(
+    "profile data",
+    JSON.stringify(profileData)
+  );
+  //Getting profile data from Api
+  const getProfile = async () => {
+    //Getting token from local storage
+    const token = JSON.parse(localStorage.getItem("token"));
+    // console.log("token", token);
+    try {
+      const res = await axios.get(`${BaseURL}/viewprofile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // console.log(res.data.data);
+      setProfileData(res.data.data);
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
+  React.useEffect(() => {
+    getProfile();
+  }, []);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -154,11 +187,17 @@ export default function PersistentDrawerLeft() {
             )}
           </IconButton>
         </DrawerHeader>
-        <i className="fa-solid fa-user text-center display-1"></i>
+        <img src={profileData.profilePic} alt="Upload Picture" />
         <p className="text-center fw-bold">{decoded.name}</p>
         <div className="d-flex justify-content-center">
           <Button variant="outlined" className="w-auto">
-            Edit Profile
+            <Link
+              type="button"
+              className="text-decoration-none"
+              to="/dashboard/editprofile"
+            >
+              Edit Profile
+            </Link>
           </Button>
         </div>
         <List>
@@ -177,6 +216,12 @@ export default function PersistentDrawerLeft() {
                     <i
                       style={{ fontSize: "25px" }}
                       className="fa-solid fa-droplet"
+                    ></i>
+                  )}
+                  {index === 2 && (
+                    <i
+                      style={{ fontSize: "25px" }}
+                      className="fa-solid fa-file"
                     ></i>
                   )}
                 </ListItemIcon>
@@ -217,7 +262,8 @@ export default function PersistentDrawerLeft() {
           sx={{ margin: "auto", display: "block", marginTop: "20px" }}
           onClick={() => {
             localStorage.removeItem("token");
-            navigate("/signup");
+            localStorage.removeItem("profile data");
+            navigate("/login");
           }}
           variant="contained"
         >
@@ -231,6 +277,8 @@ export default function PersistentDrawerLeft() {
           <Route path="/patientHome" element={<PatientHomePage />} />
           <Route path="/selectDate" element={<SelectDate />} />
           <Route path="/profile" element={<PatientProfile />} />
+          <Route path="/editprofile" element={<EditProfile />} />
+          <Route path="/Uploadmedicaldocuments" element={<UploadMedicalDocument />} />
         </Routes>
       </Main>
     </Box>
