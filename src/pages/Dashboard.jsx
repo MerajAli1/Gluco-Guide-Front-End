@@ -194,7 +194,7 @@ export default function PersistentDrawerLeft() {
           </IconButton>
         </DrawerHeader>
         <img src={profileData.profilePic} alt="Upload Picture" />
-        <p className="text-center fw-bold">{decoded.name}</p>
+        <p className="text-center fw-bold">{profileData.name}</p>
         <div className="d-flex justify-content-center">
           <Button variant="outlined" className="w-auto">
             <Link
