@@ -29,6 +29,7 @@ import EditProfile from "../patientComponents/EditProfile";
 import axios from "axios";
 import { BaseURL } from "../apiBaseURL/BaseURL";
 import UploadMedicalDocument from "../patientComponents/UploadMedicalDocument";
+import DietarySuggestion from "../patientComponents/DietarySuggestion";
 
 const routes = [
   {
@@ -45,6 +46,11 @@ const routes = [
     name: "Upload Medical Documents",
     path: "uploadmedicaldocuments",
     element: <UploadMedicalDocument />,
+  },
+  {
+    name: "Dietary Suggestions",
+    path: "dietarySuggestions",
+    element: <DietarySuggestion />,
   },
 ];
 
@@ -224,6 +230,12 @@ export default function PersistentDrawerLeft() {
                       className="fa-solid fa-file"
                     ></i>
                   )}
+                  {index === 3 && (
+                    <i
+                      style={{ fontSize: "25px" }}
+                      className="fa-solid fa-bowl-food"
+                    ></i>
+                  )}
                 </ListItemIcon>
                 <ListItemText primary={route.name} />
               </ListItemButton>
@@ -279,6 +291,7 @@ export default function PersistentDrawerLeft() {
           <Route path="/profile" element={<PatientProfile />} />
           <Route path="/editprofile" element={<EditProfile />} />
           <Route path="/Uploadmedicaldocuments" element={<UploadMedicalDocument />} />
+          <Route path="/dietarySuggestions" element={<DietarySuggestion />} />
         </Routes>
       </Main>
     </Box>

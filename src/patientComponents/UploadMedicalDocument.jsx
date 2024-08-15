@@ -3,23 +3,25 @@ import { Button, TextField, Container, Box, List } from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { BaseURL } from "../apiBaseURL/BaseURL";
-
+import { toast, ToastContainer } from "react-toastify";
 const UploadMedicalDocument = () => {
   const [medicalDocument, setMedicalDocument] = useState("");
   const [documents, setDocuments] = useState([]);
-  
+  const [loading, setLoading] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const addDocument = async (e) => {
     e.preventDefault();
     if (!medicalDocument) {
-      alert("Please select a document to upload");
+      toast.error("Please select a document to upload");
       return;
     }
     try {
+      setLoading(true);
       const token = JSON.parse(localStorage.getItem("token"));
       const res = await axios.post(
         `${BaseURL}/uploaddocument`,
         {
-          document: medicalDocument,
+          medicalDocument,
         },
         {
           headers: {
@@ -28,6 +30,10 @@ const UploadMedicalDocument = () => {
           },
         }
       );
+      toast.success("Registration Successful");
+      setLoading(false);
+      setMedicalDocument(""); // Clear the selected document
+      getAllDocuments(); // Refresh the list of documents
       console.log(res.data);
     } catch (error) {
       console.log("error: ", error);
@@ -46,16 +52,16 @@ const UploadMedicalDocument = () => {
       });
       console.log(res.data.data);
       setDocuments(res.data.data);
+      // setRefresh(!refresh);
     } catch (error) {
       console.log("error: ", error);
     }
   };
   useEffect(() => {
     getAllDocuments();
-  }, []);
+  }, [refresh]);
   return (
     <Container className="mt-5">
-      
       <Box
         className="text-center"
         style={{
@@ -79,9 +85,10 @@ const UploadMedicalDocument = () => {
             variant="contained"
             color="primary"
             type="submit"
-            style={{ padding: "10px 20px" }}
+            disabled={loading}
+            style={{ padding: "10px 20px", marginTop: 37 }}
           >
-            Upload
+            {loading ? "Uploading..." : "Upload Document"}
           </Button>
         </form>
       </Box>
@@ -97,19 +104,33 @@ const UploadMedicalDocument = () => {
       >
         <h3 className="mb-4">Uploaded Documents</h3>
         <List>
-          {documents?.map((e,i) => {
+          {documents?.map((e, i) => {
             return (
               <div>
-                <h4>Document Name</h4>
-                <p>Document Description</p>
-                <Button variant="contained" color="primary">
-                  Download
-                </Button>
+                <h4>{i + 1} Medical Document</h4>
+                <div className="row">
+                  <div className="col-md-4">
+                    <img width={"100%"} src={e.document} alt="" />
+                  </div>
+                </div>
               </div>
             );
           })}
         </List>
       </Box>
+      {/* Toastify */}
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </Container>
   );
 };
