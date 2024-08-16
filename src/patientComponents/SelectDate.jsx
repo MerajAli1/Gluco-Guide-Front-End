@@ -52,13 +52,12 @@
 //     </div>
 //   );
 // }
-
 import React, { useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Button, Stack, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import axios from "axios";
 import { BaseURL } from "../apiBaseURL/BaseURL";
 import { toast, ToastContainer } from "react-toastify";
@@ -80,6 +79,8 @@ export default function DatePickerComponent() {
   const [refresh, setRefresh] = useState(false);
   //State for Blood Pressure History
   const [bpHistoryData, setBpHistoryData] = useState([]);
+  const [filteredBPData, setFilteredBPData] = useState([]);
+
   //Fuction to handle date change
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -87,47 +88,6 @@ export default function DatePickerComponent() {
   //Function to handle modal close
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
-
-
-  
-
-  //Styles
-  const containerStyle = {
-    marginTop: "200px",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    backgroundColor: "#f8f9fa",
-    width: "80%",
-    maxWidth: "600px",
-    height: "auto",
-    margin: "0 auto",
-  };
-
-  const headerStyle = {
-    textAlign: "center",
-    marginBottom: "20px",
-    color: "#343a40",
-  };
-
-  const buttonStyle = {
-    marginTop: "20px",
-    backgroundColor: "#007bff",
-    borderColor: "#007bff",
-  };
-
-  const calendarStyle = {
-    borderRadius: "10px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    backgroundColor: "#ffffff",
-    padding: "10px",
-  };
-
-  const modalBodyStyle = {
-    maxHeight: "400px",
-    overflowY: "auto",
-    padding: "20px",
-  };
 
   //Function to input blood pressure
   const inputBP = async (e) => {
@@ -176,18 +136,67 @@ export default function DatePickerComponent() {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res.data.data);
+      
       setBpHistoryData(res.data.data);
+      console.log(res.data.data);
+      
       // setLoading(false);
     } catch (error) {
       setLoading(false);
       console.log("error: ", error);
     }
   };
-  //UseEffect for getting blood pressure history
-  // useEffect(() => {
-  //   bpHistory();
-  // }, [refresh]);
+  //ML Model API CALL IN THIS FUNCTION analayzeData()
+  const analayzeData = () => {
+    const filteredData = bpHistoryData
+    .filter((e) => {
+      const entryDate = new Date(e.date).toLocaleDateString("en-CA");
+      const selectedDateStr = selectedDate.toLocaleDateString("en-CA");
+      return entryDate === selectedDateStr;
+    })
+    .map((e) => [{ systolic: e.systolic, diastolic: e.diastolic }]);
+    setFilteredBPData(filteredData);
+    // console.log("filteredBPData", filteredBPData);
+    console.log("filteredData", filteredData);
+  };
+  //Styles
+  const containerStyle = {
+    marginTop: "200px",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    backgroundColor: "#f8f9fa",
+    width: "80%",
+    maxWidth: "600px",
+    height: "auto",
+    margin: "0 auto",
+  };
+
+  const headerStyle = {
+    textAlign: "center",
+    marginBottom: "20px",
+    color: "#343a40",
+  };
+
+  const buttonStyle = {
+    marginTop: "20px",
+    backgroundColor: "#007bff",
+    borderColor: "#007bff",
+  };
+
+  const calendarStyle = {
+    borderRadius: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    backgroundColor: "#ffffff",
+    padding: "10px",
+  };
+
+  const modalBodyStyle = {
+    maxHeight: "400px",
+    overflowY: "auto",
+    padding: "20px",
+  };
+
   return (
     <div style={containerStyle}>
       <h2 style={headerStyle}>Select a Date</h2>
@@ -207,65 +216,6 @@ export default function DatePickerComponent() {
           Show Selected Date
         </Button>
       </div>
-      {/* //Modal */}
-      {/* <Modal className="mt-5" show={showModal} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Selected Date</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p className="mb-2">Selected Date: {selectedDate.toDateString()}</p>
-          <form onSubmit={(e) => inputBP(e)}>
-            <TextField
-              fullWidth
-              onChange={(e) => setSystolic(e.target.value)}
-              label="Systolic"
-              type="number"
-              variant="outlined"
-            />
-            <TextField
-              fullWidth
-              onChange={(e) => setDiastolic(e.target.value)}
-              sx={{ mt: 3 }}
-              label="Diastolic"
-              type="number"
-              variant="outlined"
-            />
-            <Button
-              disabled={loading}
-              variant="contained"
-              sx={{ mt: 3 }}
-              type="submit"
-            >
-              {loading ? "Loading..." : "Show History"}
-            </Button>
-          </form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="contained" color="inherit" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-        <div className="text-center" style={modalBodyStyle}>
-          {bpData ?<h1>Patient History</h1>:null}
-
-          {bpData === true
-            ? bpHistoryData.map((e, i) => {
-                return (
-                  <div className="card" key={i}>
-                    <div className="card-header">History</div>
-                    <div className="card-body">
-                      <h5 className="card-title"><b>Dated:</b> {new Date(e.date).toISOString().split("T")[0]}</h5>
-                      <p className="card-text">
-                        Systolic: {e.systolic} Diastolic: {e.diastolic}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })
-            : null}
-        </div>
-      </Modal> */}
-
       {/* //Modal */}
       <Modal className="mt-5" show={showModal} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -301,10 +251,18 @@ export default function DatePickerComponent() {
           <Button
             variant="contained"
             onClick={bpHistory}
-            sx={{ mt:2}}
+            sx={{ mt: 2 }}
             type="submit"
           >
             Show History
+          </Button>
+          <Button
+            variant="contained"
+            onClick={analayzeData}
+            sx={{ mt: 2, ml: 3 }}
+            type="submit"
+          >
+            Click to Analayze Data
           </Button>
         </Modal.Body>
         <Modal.Footer>
@@ -351,6 +309,25 @@ export default function DatePickerComponent() {
               </div>
             </div>
           )}
+
+          {/* Display filtered data in the desired format */}
+          {/* <h3>Filtered Data (Systolic, Diastolic):</h3>
+          <pre>
+            {JSON.stringify(
+              bpHistoryData
+                .filter((e) => {
+                  const entryDate = new Date(e.date).toLocaleDateString(
+                    "en-CA"
+                  );
+                  const selectedDateStr =
+                    selectedDate.toLocaleDateString("en-CA");
+                  return entryDate === selectedDateStr;
+                })
+                .map((e) => [e.systolic, e.diastolic]),
+              null,
+              2
+            )}
+          </pre> */}
         </div>
       </Modal>
       {/* Toastify */}

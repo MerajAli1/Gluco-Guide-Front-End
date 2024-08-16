@@ -106,7 +106,7 @@ const UploadMedicalDocument = () => {
         <List>
           {documents?.map((e, i) => {
             return (
-              <div>
+              <div key={i}>
                 <h4>{i + 1} Medical Document</h4>
                 <div className="row">
                   <div className="col-md-4">
