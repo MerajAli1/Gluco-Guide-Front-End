@@ -54,7 +54,7 @@ export default function EditProfile() {
     try {
       setLoading(true);
       const res = await axios.post(
-        `${BaseURL}/api/user/editprofile`,
+        `${BaseURL}/user/editprofile`,
         {
           name: name,
           age: age,

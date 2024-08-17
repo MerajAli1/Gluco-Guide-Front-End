@@ -18,10 +18,10 @@ const UploadMedicalDocument = () => {
     try {
       setLoading(true);
       const token = JSON.parse(localStorage.getItem("token"));
-      console.log("token", token);
+      // console.log("token", token);
       
       const res = await axios.post(
-        `${BaseURL}/api/user/uploaddocument`,
+        `${BaseURL}/user/uploaddocument`,
         {
             medicalDocument,
         },
@@ -40,19 +40,19 @@ const UploadMedicalDocument = () => {
     } catch (error) {
       console.log("error: ", error);
     }
-    console.log(medicalDocument.name);
+    // console.log(medicalDocument.name);
   };
   const getAllDocuments = async () => {
     try {
       const token = JSON.parse(localStorage.getItem("token"));
-      console.log("token", token);
+      // console.log("token", token);
 
-      const res = await axios.get(`${BaseURL}/api/user/getdocuments`, {
+      const res = await axios.get(`${BaseURL}/user/getdocuments`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res.data.data);
+      // console.log(res.data.data);
       setDocuments(res.data.data);
       // setRefresh(!refresh);
     } catch (error) {

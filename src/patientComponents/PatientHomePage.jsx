@@ -4,7 +4,9 @@ import image from "../assets/home-page-pic.png";
 import axios from "axios";
 import { BaseURL } from "../apiBaseURL/BaseURL";
 const PatientHomePage = () => {
+  const [MLModelData, setMLModelData] = useState(""); //State for ML Model Data
   const [allHealthHistoryDetails, setAllHealthHistoryDetails] = useState([]);
+  const [loading, setLoading] = useState(false);
   const token = JSON.parse(localStorage.getItem("token"));
   const decoded = jwtDecode(token);
   // console.log(decoded);
@@ -20,21 +22,22 @@ const PatientHomePage = () => {
   const allHealthHistory = async () => {
     try {
       const token = JSON.parse(localStorage.getItem("token"));
-      console.log("token", token);
-      const res = await axios.get(`${BaseURL}/api/user/healthhistory`, {
+      // console.log("token", token);
+      const res = await axios.get(`${BaseURL}/user/healthhistory`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res.data.data);
+      // console.log(res.data.data);
       setAllHealthHistoryDetails(res.data.data);
     } catch (error) {
       console.log("error: ", error);
     }
   };
-  
-//ML Model API
+
+  //ML Model API
   const MLPerdictionFunc = async () => {
+    setLoading(true);
     try {
       const res = await axios.post(
         "http://104.214.171.179/mlmodelapi/predict",
@@ -42,15 +45,21 @@ const PatientHomePage = () => {
           data: allHealthHistoryDetails,
         }
       );
-      console.log(res);
+      // console.log(res.data.result);
+      setMLModelData(res.data.result);
+      localStorage.setItem("MLModelData", JSON.stringify(res.data.result));
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log("error: ", error);
     }
   };
   useEffect(() => {
     allHealthHistory();
-    MLPerdictionFunc();
   }, []);
+  useEffect(() => {
+    MLPerdictionFunc();
+  }, [allHealthHistoryDetails]);
   return (
     <>
       <div className="container mt-5 text-center" style={fadeInStyle}>
@@ -65,10 +74,7 @@ const PatientHomePage = () => {
           Thank you <b>{decoded.name}</b> for visiting our AI Assistant
         </p>
         <p className="lead">
-          Chances of your Accuring Diabatics is{" "}
-          <b className="text-white bg-danger py-2 px-3 border rounded-pill">
-            "82%"
-          </b>
+          {loading ? "Generating Results....." : MLModelData}
         </p>
         <b>Note:</b>
         <span>The result is based on the data you inserted.</span>

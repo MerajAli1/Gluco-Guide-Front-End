@@ -11,14 +11,14 @@ const PatientProfile = () => {
   const getProfileData = async () => {
     //Getting token from local storage
     const token = JSON.parse(localStorage.getItem("token"));
-    console.log("token", token);
+    // console.log("token", token);
     try {
-      const res = await axios.get(`${BaseURL}/api/user/viewprofile`, {
+      const res = await axios.get(`${BaseURL}/user/viewprofile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res.data.data);
+      // console.log(res.data.data);
       setProfileData(res.data.data);
     } catch (error) {
       console.log("error: ", error);

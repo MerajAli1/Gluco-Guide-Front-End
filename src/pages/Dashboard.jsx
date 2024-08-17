@@ -127,7 +127,7 @@ export default function PersistentDrawerLeft() {
     const token = JSON.parse(localStorage.getItem("token"));
     // console.log("token", token);
     try {
-      const res = await axios.get(`${BaseURL}/api/viewprofile`, {
+      const res = await axios.get(`${BaseURL}/viewprofile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -275,6 +275,7 @@ export default function PersistentDrawerLeft() {
           onClick={() => {
             localStorage.removeItem("token");
             localStorage.removeItem("profile data");
+            localStorage.removeItem("MLModelData");
             navigate("/login");
           }}
           variant="contained"

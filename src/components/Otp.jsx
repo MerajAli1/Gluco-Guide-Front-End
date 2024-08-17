@@ -52,7 +52,7 @@ export function Otp({ length = 6 }) {
       return;
     }
     try {
-      const response = await axios.post(`${BaseURL}/api/verify`, {
+      const response = await axios.post(`${BaseURL}/verify`, {
         code: otpCode,
         email: JSON.parse(localStorage.getItem("email")),
       });

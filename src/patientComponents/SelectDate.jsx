@@ -81,8 +81,8 @@ export default function DatePickerComponent() {
   const [bpHistoryData, setBpHistoryData] = useState([]);
   const [filteredBPData, setFilteredBPData] = useState([]);
   const [disablilityForAnalayzeButton, setDisablilityForAnalayzeButton] =
-    useState(true);//State for Disablility of Analyze Button
-    
+    useState(true); //State for Disablility of Analyze Button
+  const [MLModelData, setMLModelData] = useState(""); //State for ML Model Data
   //Fuction to handle date change
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -101,13 +101,13 @@ export default function DatePickerComponent() {
     }
     //Getting token from local storage
     const token = JSON.parse(localStorage.getItem("token"));
-    console.log("token", token);
+    // console.log("token", token);
 
     //API Call
     try {
       setLoading(true);
       const res = await axios.post(
-        `${BaseURL}/api/user/inputbp`,
+        `${BaseURL}/user/inputbp`,
         {
           date: selectedDate,
           systolic: systolic,
@@ -120,7 +120,7 @@ export default function DatePickerComponent() {
         }
       );
       // setRefresh(!refresh);
-      console.log(res.data);
+      // console.log(res.data);
       toast.success("Successful");
       setLoading(false);
     } catch (error) {
@@ -131,18 +131,18 @@ export default function DatePickerComponent() {
   //Function to get blood pressure history
   const bpHistory = async () => {
     const token = JSON.parse(localStorage.getItem("token"));
+    setLoading(true);
     try {
-      // setLoading(true);
-      const res = await axios.get(`${BaseURL}/api/user/bphistory`, {
+      const res = await axios.get(`${BaseURL}/user/bphistory`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       setBpHistoryData(res.data.data);
-      console.log(res.data.data);
+      // console.log(res.data.data);
       setDisablilityForAnalayzeButton(false);
-      // setLoading(false);
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       console.log("error: ", error);
@@ -159,7 +159,8 @@ export default function DatePickerComponent() {
       .map((e) => [e.systolic, e.diastolic]);
     setFilteredBPData(filteredData);
     // console.log("filteredBPData", filteredBPData);
-    console.log("filteredData", filteredData);
+    // console.log("filteredData", filteredData);
+    setLoading(true);
     try {
       const res = await axios.post(
         "http://104.214.171.179/mlmodelapi/predict",
@@ -167,8 +168,11 @@ export default function DatePickerComponent() {
           data: filteredData,
         }
       );
-      console.log(res);
+      setMLModelData(res.data.result);
+      // console.log(res.data.result);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log("error: ", error);
     }
   };
@@ -212,6 +216,18 @@ export default function DatePickerComponent() {
 
   return (
     <div style={containerStyle}>
+      <h3 className="text-center">Instructions:</h3>
+      <p>
+        <h5 className="fw-bold">Select a Date:</h5> Use the date picker to choose the date for which you want
+        to enter your blood pressure readings.
+         <h5 className="fw-bold"> Enter Systolic and Diastolic
+        Values:</h5> Input the systolic value (the higher number) in the designated
+        field. Input the diastolic value (the lower number) in the designated
+        field. <h5 className="fw-bold">Submit the Data:</h5> Once you have entered both values, click the
+        submit button to save your readings for the selected date. By following
+        these instructions, you can accurately record your blood pressure
+        readings in the system.
+      </p>
       <h2 style={headerStyle}>Select a Date</h2>
       <Form className="d-flex justify-content-center">
         <DatePicker
@@ -274,12 +290,16 @@ export default function DatePickerComponent() {
             onClick={analayzeData}
             sx={{ mt: 2, ml: 3 }}
             type="submit"
-            disabled={disablilityForAnalayzeButton}
+            disabled={disablilityForAnalayzeButton || loading}
           >
             {disablilityForAnalayzeButton
               ? "Click show history to enable"
               : "Analyze Data"}
           </Button>
+          <div>
+            <h3 className="mt-3">ML Model Data</h3>
+            <p>{loading ? "Analayzing data...." : MLModelData}</p>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="contained" color="inherit" onClick={handleClose}>

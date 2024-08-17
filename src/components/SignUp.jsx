@@ -25,7 +25,7 @@ const SignUp = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        `${BaseURL}/api/signup`,
+        `${BaseURL}/signup`,
         {
           name: name,
           age: age,
