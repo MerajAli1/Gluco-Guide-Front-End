@@ -80,7 +80,8 @@ export default function DatePickerComponent() {
   //State for Blood Pressure History
   const [bpHistoryData, setBpHistoryData] = useState([]);
   const [filteredBPData, setFilteredBPData] = useState([]);
-
+  const [disablilityForAnalayzeButton, setDisablilityForAnalayzeButton] =
+    useState(true);
   //Fuction to handle date change
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -139,7 +140,7 @@ export default function DatePickerComponent() {
 
       setBpHistoryData(res.data.data);
       console.log(res.data.data);
-
+      setDisablilityForAnalayzeButton(false);
       // setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -158,13 +159,11 @@ export default function DatePickerComponent() {
     setFilteredBPData(filteredData);
     // console.log("filteredBPData", filteredBPData);
     console.log("filteredData", filteredData);
-
-    
     try {
       const res = await axios.post(
         "http://104.214.171.179/mlmodelapi/predict",
         {
-          data:filteredData
+          data: filteredData,
         }
       );
       console.log(res);
@@ -274,8 +273,11 @@ export default function DatePickerComponent() {
             onClick={analayzeData}
             sx={{ mt: 2, ml: 3 }}
             type="submit"
+            disabled={disablilityForAnalayzeButton}
           >
-            Click to Analayze Data
+            {disablilityForAnalayzeButton
+              ? "Click show history to enable"
+              : "Analyze Data"}
           </Button>
         </Modal.Body>
         <Modal.Footer>

@@ -1,18 +1,56 @@
 import { jwtDecode } from "jwt-decode";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import image from "../assets/home-page-pic.png";
+import axios from "axios";
+import { BaseURL } from "../apiBaseURL/BaseURL";
 const PatientHomePage = () => {
+  const [allHealthHistoryDetails, setAllHealthHistoryDetails] = useState([]);
   const token = JSON.parse(localStorage.getItem("token"));
   const decoded = jwtDecode(token);
   // console.log(decoded);
 
   const fadeInStyle = {
-    animation: 'fadeIn 2s ease-in-out'
+    animation: "fadeIn 2s ease-in-out",
   };
 
   const slideInStyle = {
-    animation: 'slideIn 1.5s ease-in-out'
+    animation: "slideIn 1.5s ease-in-out",
   };
+
+  const allHealthHistory = async () => {
+    try {
+      const token = JSON.parse(localStorage.getItem("token"));
+      console.log("token", token);
+      const res = await axios.get(`${BaseURL}/api/user/healthhistory`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res.data.data);
+      setAllHealthHistoryDetails(res.data.data);
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
+  
+//ML Model API
+  const MLPerdictionFunc = async () => {
+    try {
+      const res = await axios.post(
+        "http://104.214.171.179/mlmodelapi/predict",
+        {
+          data: allHealthHistoryDetails,
+        }
+      );
+      console.log(res);
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
+  useEffect(() => {
+    allHealthHistory();
+    MLPerdictionFunc();
+  }, []);
   return (
     <>
       <div className="container mt-5 text-center" style={fadeInStyle}>
@@ -26,8 +64,14 @@ const PatientHomePage = () => {
         <p className="lead">
           Thank you <b>{decoded.name}</b> for visiting our AI Assistant
         </p>
-        <p className="lead">Chances of your Accuring Diabatics is <b className="text-white bg-danger py-2 px-3 border rounded-pill">"82%"</b></p>
-        <b>Note:</b><span>The result is based on the data you inserted.</span>
+        <p className="lead">
+          Chances of your Accuring Diabatics is{" "}
+          <b className="text-white bg-danger py-2 px-3 border rounded-pill">
+            "82%"
+          </b>
+        </p>
+        <b>Note:</b>
+        <span>The result is based on the data you inserted.</span>
       </div>
       <style>
         {`
