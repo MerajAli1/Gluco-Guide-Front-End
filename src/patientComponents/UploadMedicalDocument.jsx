@@ -18,10 +18,12 @@ const UploadMedicalDocument = () => {
     try {
       setLoading(true);
       const token = JSON.parse(localStorage.getItem("token"));
+      console.log("token", token);
+      
       const res = await axios.post(
-        `${BaseURL}/uploaddocument`,
+        `${BaseURL}/api/user/uploaddocument`,
         {
-          medicalDocument,
+            medicalDocument,
         },
         {
           headers: {
@@ -45,7 +47,7 @@ const UploadMedicalDocument = () => {
       const token = JSON.parse(localStorage.getItem("token"));
       console.log("token", token);
 
-      const res = await axios.get(`${BaseURL}/getdocuments`, {
+      const res = await axios.get(`${BaseURL}/api/user/getdocuments`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -13,7 +13,7 @@ const PatientProfile = () => {
     const token = JSON.parse(localStorage.getItem("token"));
     console.log("token", token);
     try {
-      const res = await axios.get(`${BaseURL}/viewprofile`, {
+      const res = await axios.get(`${BaseURL}/api/user/viewprofile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -105,7 +105,7 @@ export default function DatePickerComponent() {
     try {
       setLoading(true);
       const res = await axios.post(
-        `${BaseURL}/inputbp`,
+        `${BaseURL}/api/user/inputbp`,
         {
           date: selectedDate,
           systolic: systolic,
@@ -131,15 +131,15 @@ export default function DatePickerComponent() {
     const token = JSON.parse(localStorage.getItem("token"));
     try {
       // setLoading(true);
-      const res = await axios.get(`${BaseURL}/bphistory`, {
+      const res = await axios.get(`${BaseURL}/api/user/bphistory`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       setBpHistoryData(res.data.data);
       console.log(res.data.data);
-      
+
       // setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -147,17 +147,30 @@ export default function DatePickerComponent() {
     }
   };
   //ML Model API CALL IN THIS FUNCTION analayzeData()
-  const analayzeData = () => {
+  const analayzeData = async () => {
     const filteredData = bpHistoryData
-    .filter((e) => {
-      const entryDate = new Date(e.date).toLocaleDateString("en-CA");
-      const selectedDateStr = selectedDate.toLocaleDateString("en-CA");
-      return entryDate === selectedDateStr;
-    })
-    .map((e) => [{ systolic: e.systolic, diastolic: e.diastolic }]);
+      .filter((e) => {
+        const entryDate = new Date(e.date).toLocaleDateString("en-CA");
+        const selectedDateStr = selectedDate.toLocaleDateString("en-CA");
+        return entryDate === selectedDateStr;
+      })
+      .map((e) => [e.systolic, e.diastolic]);
     setFilteredBPData(filteredData);
     // console.log("filteredBPData", filteredBPData);
     console.log("filteredData", filteredData);
+
+    
+    try {
+      const res = await axios.post(
+        "http://104.214.171.179/mlmodelapi/predict",
+        {
+          data:filteredData
+        }
+      );
+      console.log(res);
+    } catch (error) {
+      console.log("error: ", error);
+    }
   };
   //Styles
   const containerStyle = {

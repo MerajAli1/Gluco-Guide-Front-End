@@ -127,7 +127,7 @@ export default function PersistentDrawerLeft() {
     const token = JSON.parse(localStorage.getItem("token"));
     // console.log("token", token);
     try {
-      const res = await axios.get(`${BaseURL}/viewprofile`, {
+      const res = await axios.get(`${BaseURL}/api/viewprofile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -193,7 +193,7 @@ export default function PersistentDrawerLeft() {
             )}
           </IconButton>
         </DrawerHeader>
-        <img src={profileData.profilePic} alt="Upload Picture" />
+        <img className="rounded-pill" src={profileData.profilePic} alt="Upload Picture" />
         <p className="text-center fw-bold">{profileData.name}</p>
         <div className="d-flex justify-content-center">
           <Button variant="outlined" className="w-auto">

@@ -19,22 +19,20 @@ const Login = () => {
     }
     try {
       setLoading(true);
-
-      const res = await axios.post(`${BaseURL}/login`, {
+      const res = await axios.post(`${BaseURL}/api/login`, {
         email: email,
         password: password,
       });
-      // Setting token in local storage
-      const token = localStorage.setItem(
-        "token",
-        JSON.stringify(res.data.token)
-      );
-      console.log(res.data.token);
-      toast.success("Login Successful");
-      setTimeout(() => {
+      console.log(res.data);
+      const token = res.data.token;
+      console.log(token, "LOGIN");
+      const loginToken = localStorage.setItem("token", JSON.stringify(token));
+
+      if (token) {
         navigate("/dashboard/patientHome");
-        setLoading(false);
-      }, 3000);
+      } else {
+        navigate("/otp");
+      }
     } catch (error) {
       setLoading(false);
       console.log(error);
