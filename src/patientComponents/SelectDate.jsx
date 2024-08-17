@@ -81,7 +81,8 @@ export default function DatePickerComponent() {
   const [bpHistoryData, setBpHistoryData] = useState([]);
   const [filteredBPData, setFilteredBPData] = useState([]);
   const [disablilityForAnalayzeButton, setDisablilityForAnalayzeButton] =
-    useState(true);
+    useState(true);//State for Disablility of Analyze Button
+    
   //Fuction to handle date change
   const handleDateChange = (date) => {
     setSelectedDate(date);
