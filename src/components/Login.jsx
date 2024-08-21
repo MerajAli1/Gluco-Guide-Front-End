@@ -30,7 +30,9 @@ const Login = () => {
 
       if (token) {
         navigate("/dashboard/patientHome");
-      } 
+      } else {
+        navigate("/otp");
+      }
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -47,7 +49,7 @@ const Login = () => {
               <div className="col-lg-6 mb-5 mb-lg-0">
                 <h1 className="my-5 display-3 fw-bold ls-tight">
                   Gluco Guide <br />
-                  <span className="text-primary">
+                  <span style={{ color: "purple" }}>
                     Your personal health assistant
                   </span>
                 </h1>
@@ -65,7 +67,10 @@ const Login = () => {
                     <form onSubmit={(e) => loginPatient(e)}>
                       {/* <!-- 2 column grid layout with text inputs for the first and last names --> */}
                       <div className="row">
-                        <h1 className="display-5 fw-bold ls-tight text-center text-primary">
+                        <h1
+                          className="display-5 fw-bold ls-tight text-center"
+                          style={{ color: "purple" }}
+                        >
                           Login
                         </h1>
                         <p className="text-center fw-bold">
@@ -99,7 +104,8 @@ const Login = () => {
                         type="submit"
                         data-mdb-button-init
                         data-mdb-ripple-init
-                        className="btn btn-primary btn-block mb-4"
+                        className="btn btn-block mb-4"
+                        style={{ backgroundColor: "purple" }}
                       >
                         {loading ? "Loading..." : "Login"}
                       </Button>
@@ -109,7 +115,8 @@ const Login = () => {
                         Don't have an account?{" "}
                         <Link
                           to="/signup"
-                          className="text-primary text-decoration-none"
+                          className="text-decoration-none"
+                          style={{ color: "purple" }}
                         >
                           Sign Up
                         </Link>

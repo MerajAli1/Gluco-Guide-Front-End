@@ -47,8 +47,7 @@ const Home = () => {
   const handleMouseLeave = (e) => {
     e.target.style.transform = "scale(1)";
   };
-  
- 
+
   return (
     <Container fluid style={containerStyle}>
       <style>
@@ -77,7 +76,7 @@ const Home = () => {
           <Box>
             <h1 className="my-5 display-3 fw-bold ls-tight">
               Gluco Guide <br />
-              <span className="text-primary">
+              <span style={{ color: "purple" }}>
                 Your personal health assistant
               </span>
             </h1>
@@ -87,7 +86,7 @@ const Home = () => {
               sugar levels, and other vital information, it provides
               personalized insights and dietary recommendations.
             </Typography>
-            <Button variant="contained" sx={{ mt: 2 }}>
+            <Button sx={{ mt: 2 }} style={{ backgroundColor: "purple" }}>
               <Link
                 to="/login"
                 style={{ textDecoration: "none", color: "white" }}

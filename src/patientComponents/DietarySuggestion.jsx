@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Box,
@@ -9,8 +9,7 @@ import {
 } from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-let dietarySuggestions = [];
-let lowDietarySuggestions = [
+const lowDietarySuggestions = [
   {
     id: 1,
     title: "Increase Salt Intake",
@@ -62,7 +61,8 @@ let lowDietarySuggestions = [
     description: "Regularly check your blood pressure levels.",
   },
 ];
-let highDietarySuggestions = [
+
+const highDietarySuggestions = [
   {
     id: 1,
     title: "Reduce Salt Intake",
@@ -115,7 +115,7 @@ let highDietarySuggestions = [
   },
 ];
 
-let mediumDietarySuggestions = [
+const mediumDietarySuggestions = [
   {
     id: 1,
     title: "Maintain Balanced Diet",
@@ -167,37 +167,41 @@ let mediumDietarySuggestions = [
     description: "Take time to enjoy your meals and eat mindfully.",
   },
 ];
+
 const DietarySuggestion = () => {
-  const [loading, setLoading] = React.useState(false);
-  const [MlData, setMlData] = React.useState(null);
-  const [suggestions, setSuggestions] = React.useState(null);
-  // setLoading(true)
-  const MLModelData = localStorage.getItem("MLModelData").toLocaleLowerCase();
-  console.log(MLModelData);
+  const [loading, setLoading] = useState(true);
+  const [suggestions, setSuggestions] = useState(
+    "No specific dietary suggestions available."
+  );
+  const [dietarySuggestions, setDietarySuggestions] = useState([]);
 
   useEffect(() => {
-    setMlData(MLModelData);
-    setLoading(true);
-    if (MLModelData.includes("low")) {
-      dietarySuggestions = lowDietarySuggestions;
-      setSuggestions(
-        "Your blood pressure is low. Consider increasing your intake of salty foods and staying hydrated."
-      );
-    } else if (MLModelData.includes("high")) {
-      dietarySuggestions = highDietarySuggestions;
-      setSuggestions(
-        "Your blood pressure is high. Reduce your intake of salty foods and avoid caffeine."
-      );
-    } else if (MLModelData.includes("medium")) {
-      dietarySuggestions = mediumDietarySuggestions;
-      setSuggestions(
-        "Your blood pressure is at a medium level. Maintain a balanced diet and regular exercise."
-      );
+    const MLModelData = localStorage.getItem("MLModelData");
+    if (MLModelData) {
+      const lowerCaseData = MLModelData.toLocaleLowerCase();
+      if (lowerCaseData.includes("low")) {
+        setDietarySuggestions(lowDietarySuggestions);
+        setSuggestions(
+          "Your blood pressure is low. Consider increasing your intake of salty foods and staying hydrated."
+        );
+      } else if (lowerCaseData.includes("high")) {
+        setDietarySuggestions(highDietarySuggestions);
+        setSuggestions(
+          "Your blood pressure is high. Reduce your intake of salty foods and avoid caffeine."
+        );
+      } else if (lowerCaseData.includes("medium")) {
+        setDietarySuggestions(mediumDietarySuggestions);
+        setSuggestions(
+          "Your blood pressure is at a medium level. Maintain a balanced diet and regular exercise."
+        );
+      } else {
+        setSuggestions("No specific dietary suggestions available.");
+      }
     } else {
-      setSuggestions("No specific dietary suggestions available.");
+      setSuggestions("No data available.");
     }
     setLoading(false);
-  }, [MlData]);
+  }, []);
 
   return (
     <Container className="mt-5">
@@ -216,22 +220,26 @@ const DietarySuggestion = () => {
         <Typography variant="body1" className="mb-4">
           {suggestions}
         </Typography>
-        <Grid container spacing={3}>
-          {loading ?"Generating Diet....":dietarySuggestions.map((suggestion) => (
-            <Grid item xs={12} sm={6} md={4} key={suggestion.id}>
-              <Card style={{ height: "100%" }}>
-                <CardContent>
-                  <Typography variant="h6" component="div">
-                    {suggestion.title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {suggestion.description}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+        {loading ? (
+          <Typography variant="body1">Generating Diet...</Typography>
+        ) : (
+          <Grid container spacing={3}>
+            {dietarySuggestions.map((suggestion) => (
+              <Grid item xs={12} sm={6} md={4} key={suggestion.id}>
+                <Card style={{ height: "100%" }}>
+                  <CardContent>
+                    <Typography variant="h6" component="div">
+                      {suggestion.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {suggestion.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        )}
       </Box>
     </Container>
   );

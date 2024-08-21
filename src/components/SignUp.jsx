@@ -24,25 +24,22 @@ const SignUp = () => {
     }
     try {
       setLoading(true);
-      const res = await axios.post(
-        `${BaseURL}/signup`,
-        {
-          name: name,
-          age: age,
-          weight: weight,
-          email: email,
-          password: password,
-          height: height,
-        }
-      );
+      const res = await axios.post(`${BaseURL}/signup`, {
+        name: name,
+        age: age,
+        weight: weight,
+        email: email,
+        password: password,
+        height: height,
+      });
       console.log(res.data);
       const token = res.data.token;
-      const loginToken = localStorage.setItem("email", JSON.stringify(email));
-      console.log(token, "LOGIN TOKEN");
+      console.log(token, "LOGIN");
+      const loginToken = localStorage.setItem("token", JSON.stringify(token));
       // toast.success("Registration Successful");
       setTimeout(() => {
         setLoading(false);
-        navigate("/otp");
+        navigate("/dashboard/patientHome");
       }, 3000);
     } catch (error) {
       setLoading(false);
