@@ -152,10 +152,20 @@ export default function PersistentDrawerLeft() {
   const navigateHandler = (path) => {
     navigate(path);
   };
+  const placeholderPic = "https://via.placeholder.com/100";
+  const imageUrl =
+    profileData && profileData.profilePic
+      ? profileData.profilePic
+      : placeholderPic;
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar
+        style={{ backgroundColor: "purple" }}
+        position="fixed"
+        open={open}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -193,14 +203,25 @@ export default function PersistentDrawerLeft() {
             )}
           </IconButton>
         </DrawerHeader>
-        <img className="rounded-pill" src={profileData.profilePic} alt="Upload Picture" />
+
+        <img
+          className="rounded-pill"
+          src={imageUrl}
+          alt="Profile Picture"
+          style={{ width: "100px", height: "100px", objectFit: "cover", marginLeft:"30%"}} // Optional styling
+        />
         <p className="text-center fw-bold">{profileData.name}</p>
         <div className="d-flex justify-content-center">
-          <Button variant="outlined" className="w-auto">
+          <Button
+            variant="outlined"
+            className="w-auto"
+            style={{ color: "purple" }}
+          >
             <Link
               type="button"
               className="text-decoration-none"
               to="/dashboard/editprofile"
+              style={{ color: "purple" }}
             >
               Edit Profile
             </Link>
@@ -271,7 +292,12 @@ export default function PersistentDrawerLeft() {
         </List>
         {/* //Logout button */}
         <Button
-          sx={{ margin: "auto", display: "block", marginTop: "20px" }}
+          sx={{
+            margin: "auto",
+            display: "block",
+            marginTop: "20px",
+            backgroundColor: "purple",
+          }}
           onClick={() => {
             localStorage.removeItem("token");
             localStorage.removeItem("profile data");
@@ -291,7 +317,10 @@ export default function PersistentDrawerLeft() {
           <Route path="/selectDate" element={<SelectDate />} />
           <Route path="/profile" element={<PatientProfile />} />
           <Route path="/editprofile" element={<EditProfile />} />
-          <Route path="/Uploadmedicaldocuments" element={<UploadMedicalDocument />} />
+          <Route
+            path="/Uploadmedicaldocuments"
+            element={<UploadMedicalDocument />}
+          />
           <Route path="/dietarySuggestions" element={<DietarySuggestion />} />
         </Routes>
       </Main>
