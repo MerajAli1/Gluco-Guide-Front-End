@@ -30,9 +30,7 @@ const Login = () => {
 
       if (token) {
         navigate("/dashboard/patientHome");
-      } else {
-        navigate("/otp");
-      }
+      } 
     } catch (error) {
       setLoading(false);
       console.log(error);
