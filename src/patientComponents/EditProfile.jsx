@@ -42,6 +42,7 @@ export default function EditProfile() {
   const [height, setHeight] = React.useState("");
   const [profilePic, setProfilePic] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [refresh, setRefresh] = React.useState(false);
   //Edit Profile Function
   const editProfile = async (event) => {
     event.preventDefault();
@@ -76,6 +77,7 @@ export default function EditProfile() {
         setLoading(false);
       }
       console.log(res.data);
+      setRefresh(!refresh)
     } catch (error) {
       setLoading(false);
       console.log("error: ", error);
@@ -93,7 +95,7 @@ export default function EditProfile() {
     setWeight(data?.weight);
     setHeight(data?.height);
     // setProfilePic(data?.profilePic);
-  }, []);
+  }, [refresh]);
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">

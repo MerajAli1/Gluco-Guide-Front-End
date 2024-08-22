@@ -1,61 +1,79 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Container, Box, Typography, Card, CardContent, Avatar, Grid } from "@mui/material";
 import { BaseURL } from "../apiBaseURL/BaseURL";
+
 const PatientProfile = () => {
   const [profileData, setProfileData] = useState({});
-  const profileDataLocalStorage = localStorage.setItem(
-    "profile data",
-    JSON.stringify(profileData)
-  );
-  const getProfileData = async () => {
-    //Getting token from local storage
-    const token = JSON.parse(localStorage.getItem("token"));
-    // console.log("token", token);
-    try {
-      const res = await axios.get(`${BaseURL}/user/viewprofile`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      // console.log(res.data.data);
-      setProfileData(res.data.data);
-    } catch (error) {
-      console.log("error: ", error);
-    }
-  };
+  
   useEffect(() => {
+    const getProfileData = async () => {
+      const token = JSON.parse(localStorage.getItem("token"));
+      try {
+        const res = await axios.get(`${BaseURL}/user/viewprofile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setProfileData(res.data.data);
+        localStorage.setItem("profile data", JSON.stringify(res.data.data));
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
     getProfileData();
   }, []);
+
   return (
-    <>
-      <div className="container mt-5">
-        <h1 className="text-center mb-4">Patient Profile</h1>
-        <div className="row justify-content-center">
-          <div className="col-md-6 text-center">
-            <img
-              width="50%"
-              src={profileData.profilePic}
-              alt="not found"
-              className="img-fluid rounded-circle mb-3"
-              style={{ border: "2px solid #ddd", padding: "5px" }}
-            />
-          </div>
-        </div>
-        <div className="row justify-content-center">
-          <div className="col-md-6 text-center">
-            <div className="card p-3">
-              <div className="card-body">
-                <h5 className="card-title">Name: {profileData.name}</h5>
-                <p className="card-text">Age: {profileData.age}</p>
-                <p className="card-text">Weight: {profileData.weight}</p>
-                <p className="card-text">Height: {profileData.height}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+    <Container sx={{ mt: 5 }}>
+      <Typography variant="h4" align="center" gutterBottom color="secondary">
+        Patient Profile
+      </Typography>
+      <Grid container justifyContent="center">
+        <Grid item xs={12} md={6} textAlign="center">
+          <Avatar
+            src={profileData.profilePic}
+            alt="Profile Picture"
+            sx={{ width: 150, height: 150, mb: 3 }}
+          />
+        </Grid>
+      </Grid>
+      <Grid container justifyContent="center">
+        <Grid item xs={12} md={6}>
+          <Card sx={{ p: 3 }}>
+            <CardContent>
+              <Typography variant="h6" color="secondary">
+                Name: {profileData.name}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                Age: {profileData.age}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                Weight: {profileData.weight}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                Height: {profileData.height}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                Diabetes Status: {profileData.haveDiabetes}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                Prediabetes Status: {profileData.havePreDiabetes}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                Are you active: {profileData.areYouActive}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                Do you check BP daily: {profileData.checkBPdialy}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                Your lifestyle: {profileData.lifeStyle}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 

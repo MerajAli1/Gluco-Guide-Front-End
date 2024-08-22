@@ -1,10 +1,19 @@
-import { Button, Grid, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import React, { useState } from "react";
 import Footer from "./Footer";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { BaseURL } from "../apiBaseURL/BaseURL";
+import image from "../assets/gluco-guide-image.jpg";
 const SignUp = () => {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
@@ -13,12 +22,46 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [height, setHeight] = useState("");
   const [loading, setLoading] = useState(false);
+  const [diabetics, setDiabetics] = useState("");
+  const [prediabetics, setPrediabetics] = useState("");
+  const [lifestyle, setLifestyle] = useState("");
+  const [active, setActive] = useState("");
+  const [bloodSugar, setBloodSugar] = useState("");
+  const formControlStyle = {
+    width: "100%",
+    marginBottom: "16px",
+  };
+
+  const labelStyle = {
+    display: "block",
+    marginBottom: "8px",
+  };
+
+  const selectStyle = {
+    width: "100%",
+    padding: "8px",
+    borderRadius: "4px",
+    border: "1px solid #ccc",
+  };
+
   const navigate = useNavigate();
   //Register Patient
   const registerPatient = async (e) => {
     e.preventDefault();
     //Check if fields are empty
-    if (!name || !age || !weight || !email || !password) {
+    if (
+      !name ||
+      !age ||
+      !weight ||
+      !email ||
+      !password ||
+      !height ||
+      !diabetics ||
+      !prediabetics ||
+      !lifestyle ||
+      !active ||
+      !bloodSugar
+    ) {
       toast.error("Please fill in all the fields");
       return;
     }
@@ -31,6 +74,11 @@ const SignUp = () => {
         email: email,
         password: password,
         height: height,
+        haveDiabetes: diabetics,
+        havePreDiabetes: prediabetics,
+        lifeStyle: lifestyle,
+        areYouActive: active,
+        checkBPdialy: bloodSugar,
       });
       console.log(res.data);
       const token = res.data.token;
@@ -55,7 +103,7 @@ const SignUp = () => {
           <div className="container">
             <div className="row gx-lg-5 align-items-center">
               <div className="col-lg-6 mb-5 mb-lg-0">
-                <h1 className="my-5 display-3 fw-bold ls-tight">
+                {/* <h1 className="my-5 display-3 fw-bold ls-tight">
                   Gluco Guide <br />
                   <span className="text-primary">
                     Your personal health assistant
@@ -66,15 +114,23 @@ const SignUp = () => {
                   manage your health effectively. By tracking your blood
                   pressure, sugar levels, and other vital information, it
                   provides personalized insights and dietary recommendations.
-                </p>
+                </p> */}
+                <img
+                  width={"100%"}
+                  height={"600vh"}
+                  src={image}
+                  alt="Image Not Found"
+                />
               </div>
-
               <div className="col-lg-6 mb-5 mb-lg-0">
                 <div className="card shadow">
                   <div className="card-body py-5 px-md-5">
                     {/* <!-- 2 column grid layout with text inputs for the first and last names --> */}
                     <div className="row">
-                      <h1 className="display-5 fw-bold ls-tight text-center text-primary">
+                      <h1
+                        className="display-5 fw-bold ls-tight text-center "
+                        style={{ color: "purple" }}
+                      >
                         Sign Up
                       </h1>
                       <p className="text-center fw-bold">
@@ -130,6 +186,123 @@ const SignUp = () => {
                           variant="outlined"
                         />
                       </div>
+                      {/* //Patient History Block */}
+                      <div>
+                        {/* Diabetics & Prediabetics */}
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "16px",
+                            marginBottom: "24px",
+                          }}
+                        >
+                          {/* Diabeties */}
+                          <div style={formControlStyle}>
+                            <label style={labelStyle} htmlFor="diabetics">
+                              Do You Have Diabeties?
+                            </label>
+                            <select
+                              id="diabetics"
+                              value={diabetics}
+                              onChange={(e) => setDiabetics(e.target.value)}
+                              style={selectStyle}
+                            >
+                              <option value="" disabled defaultValue>
+                                Select
+                              </option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                              <option value="Probably">Probably</option>
+                            </select>
+                          </div>
+                          {/* PreDiabetics */}
+                          <div style={formControlStyle}>
+                            <label style={labelStyle} htmlFor="prediabetics">
+                              Do You Have Prediabeties?
+                            </label>
+                            <select
+                              id="prediabetics"
+                              value={prediabetics}
+                              onChange={(e) => setPrediabetics(e.target.value)}
+                              style={selectStyle}
+                            >
+                              <option value="" disabled defaultValue>
+                                Select
+                              </option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                              <option value="Probably">Probably</option>
+                            </select>
+                          </div>
+                        </div>
+                        {/* Lifestyle & Active */}
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "16px",
+                            marginBottom: "24px",
+                          }}
+                        >
+                          {/* Active Field */}
+                          <div style={formControlStyle}>
+                            <label style={labelStyle} htmlFor="active">
+                              Are you Active?
+                            </label>
+                            <select
+                              id="active"
+                              value={active}
+                              onChange={(e) => setActive(e.target.value)}
+                              style={selectStyle}
+                            >
+                              <option value="" disabled defaultValue>
+                                Select
+                              </option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                              <option value="Probably">Probably</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Do you check your blood sugar regularly */}
+                        <div style={formControlStyle}>
+                          <label style={labelStyle} htmlFor="bloodSugar">
+                            Do you check your blood sugar regularly?
+                          </label>
+                          <select
+                            id="bloodSugar"
+                            value={bloodSugar}
+                            onChange={(e) => setBloodSugar(e.target.value)}
+                            style={selectStyle}
+                          >
+                            <option value="" disabled defaultValue>
+                              Select
+                            </option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Probably">Probably</option>
+                          </select>
+                        </div>
+                        {/* Lifestyle Field */}
+                        <div style={formControlStyle}>
+                          <label style={labelStyle} htmlFor="lifestyle">
+                            Whats Your Lifestyle?
+                          </label>
+                          <textarea
+                            id="lifestyle"
+                            value={lifestyle}
+                            onChange={(e) => setLifestyle(e.target.value)}
+                            style={{
+                              width: "100%",
+                              padding: "8px",
+                              borderRadius: "4px",
+                              border: "1px solid #ccc",
+                              resize: "vertical", // Allow vertical resizing
+                              minHeight: "100px", // Minimum height for the textarea
+                            }}
+                          />
+                        </div>
+                      </div>
                       {/* <!-- Email input --> */}
                       <div data-mdb-input-init className="form-outline mb-4">
                         <TextField
@@ -156,7 +329,8 @@ const SignUp = () => {
                         data-mdb-button-init
                         data-mdb-ripple-init
                         disabled={loading}
-                        className="btn btn-primary btn-block mb-4"
+                        className="btn btn-block mb-4"
+                        style={{ backgroundColor: "purple" }}
                       >
                         {loading ? "Loading..." : "Sign Up"}
                       </Button>
@@ -165,8 +339,9 @@ const SignUp = () => {
                       <p>
                         Already have an account?{" "}
                         <Link
+                          style={{ color: "purple" }}
                           to="/login"
-                          className="text-primary text-decoration-none"
+                          className=" text-decoration-none"
                         >
                           Login
                         </Link>

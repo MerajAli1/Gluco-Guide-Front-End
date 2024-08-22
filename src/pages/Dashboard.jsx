@@ -111,6 +111,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function PersistentDrawerLeft() {
   const theme = useTheme();
+  const [selectedRoute, setSelectedRoute] = React.useState('');
   const [profileData, setProfileData] = React.useState({});
   const [open, setOpen] = React.useState(false);
   //Decoding the token
@@ -141,6 +142,21 @@ export default function PersistentDrawerLeft() {
   React.useEffect(() => {
     getProfile();
   }, []);
+
+
+  React.useEffect(() => {
+    // Retrieve the saved route name from localStorage when the component mounts
+    const savedRoute = localStorage.getItem('selectedRoute');
+    if (savedRoute) {
+      setSelectedRoute(savedRoute);
+    }
+  }, []);
+
+  const handleRouteClick = (routeName) => {
+    setSelectedRoute(routeName);
+    localStorage.setItem('selectedRoute', routeName); // Save the selected route name to localStorage
+  };
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -177,8 +193,10 @@ export default function PersistentDrawerLeft() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Patient Dashboard
-          </Typography>
+      </Typography>
+      <Typography variant="h6" noWrap component="div">
+        {selectedRoute ? `${selectedRoute} Page` : 'Patient Dashboard'}
+      </Typography>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -208,7 +226,12 @@ export default function PersistentDrawerLeft() {
           className="rounded-pill"
           src={imageUrl}
           alt="Profile Picture"
-          style={{ width: "100px", height: "100px", objectFit: "cover", marginLeft:"30%"}} // Optional styling
+          style={{
+            width: "100px",
+            height: "100px",
+            objectFit: "cover",
+            marginLeft: "30%",
+          }} // Optional styling
         />
         <p className="text-center fw-bold">{profileData.name}</p>
         <div className="d-flex justify-content-center">
@@ -231,7 +254,10 @@ export default function PersistentDrawerLeft() {
           {/* //Mapping the routes for the admin dashboard */}
           {routes.map((route, index) => (
             <ListItem key={index} disablePadding>
-              <ListItemButton onClick={() => navigateHandler(route.path)}>
+              <ListItemButton onClick={() => {
+                navigateHandler(route.path)
+                handleRouteClick(route.name)
+              }}>
                 <ListItemIcon>
                   {index === 0 && (
                     <i
@@ -252,10 +278,12 @@ export default function PersistentDrawerLeft() {
                     ></i>
                   )}
                   {index === 3 && (
+                    <>
                     <i
                       style={{ fontSize: "25px" }}
                       className="fa-solid fa-bowl-food"
                     ></i>
+                    </>
                   )}
                 </ListItemIcon>
                 <ListItemText primary={route.name} />
@@ -276,7 +304,10 @@ export default function PersistentDrawerLeft() {
           {/* //Mapping the routes for the Profile dashboard */}
           {profileRoutes.map((route, index) => (
             <ListItem key={index} disablePadding>
-              <ListItemButton onClick={() => navigateHandler(route.path)}>
+              <ListItemButton onClick={() => {
+                navigateHandler(route.path)
+                handleRouteClick(route.name)
+              }}>
                 <ListItemIcon>
                   {index === 0 && (
                     <i

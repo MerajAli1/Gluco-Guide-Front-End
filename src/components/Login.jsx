@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { BaseURL } from "../apiBaseURL/BaseURL";
+import image from '../assets/gluco-guide-image.jpg'
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,16 +24,17 @@ const Login = () => {
         email: email,
         password: password,
       });
-      console.log(res.data);
+      console.log(res);
       const token = res.data.token;
       console.log(token, "LOGIN");
       const loginToken = localStorage.setItem("token", JSON.stringify(token));
-
+      if(!token){
+        toast.error("Invalid Credentials")
+        setLoading(false)
+      }
       if (token) {
         navigate("/dashboard/patientHome");
-      } else {
-        navigate("/otp");
-      }
+      } 
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -47,7 +49,7 @@ const Login = () => {
           <div className="container">
             <div className="row gx-lg-5 align-items-center">
               <div className="col-lg-6 mb-5 mb-lg-0">
-                <h1 className="my-5 display-3 fw-bold ls-tight">
+                {/* <h1 className="my-5 display-3 fw-bold ls-tight">
                   Gluco Guide <br />
                   <span style={{ color: "purple" }}>
                     Your personal health assistant
@@ -58,7 +60,13 @@ const Login = () => {
                   manage your health effectively. By tracking your blood
                   pressure, sugar levels, and other vital information, it
                   provides personalized insights and dietary recommendations.
-                </p>
+                </p> */}
+                <img
+                  width={"100%"}
+                  height={"100%"}
+                  src={image}
+                  alt="Image Not Found"
+                />
               </div>
 
               <div className="col-lg-6 mb-5 mb-lg-0">
