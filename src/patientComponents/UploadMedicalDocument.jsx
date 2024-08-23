@@ -85,7 +85,7 @@ const UploadMedicalDocument = () => {
           />
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             type="submit"
             disabled={loading}
             style={{ padding: "10px 20px", marginTop: 37 }}

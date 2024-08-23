@@ -74,7 +74,7 @@ const Home = () => {
         </Col>
         <Col xs={12} md={6} style={textStyle}>
           <Box>
-            <h1 className="my-5 display-3 fw-bold ls-tight">
+            <h1 className="my-3 display-3 fw-bold ls-tight">
               Gluco Guide <br />
               <span style={{ color: "purple" }}>
                 Your personal health assistant

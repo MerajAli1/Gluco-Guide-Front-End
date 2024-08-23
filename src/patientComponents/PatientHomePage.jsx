@@ -7,6 +7,7 @@ const PatientHomePage = () => {
   const [MLModelData, setMLModelData] = useState(""); //State for ML Model Data
   const [allHealthHistoryDetails, setAllHealthHistoryDetails] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [profileData, setProfileData] = useState({});
   const token = JSON.parse(localStorage.getItem("token"));
   const decoded = jwtDecode(token);
   // console.log(decoded);
@@ -54,8 +55,27 @@ const PatientHomePage = () => {
       console.log("error: ", error);
     }
   };
+
+  //Fetch all User data
+  const userData = async () => {
+      const token = JSON.parse(localStorage.getItem("token"));
+      try {
+        const res = await axios.get(`${BaseURL}/user/viewprofile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setProfileData(res.data.data);
+        console.log("profile data: ", res.data.data);
+        
+        localStorage.setItem("profile data", JSON.stringify(res.data.data));
+      } catch (error) {
+        console.log("error: ", error);
+      }
+  }
   useEffect(() => {
     allHealthHistory();
+    userData();
   }, []);
   useEffect(() => {
     MLPerdictionFunc();
@@ -71,7 +91,7 @@ const PatientHomePage = () => {
         />
         <h1 className="mb-4">Welcome to Gluco Guide</h1>
         <p className="lead">
-          Thank you <b>{decoded.name}</b> for visiting our AI Assistant
+          Thank you <b>{profileData.name}</b> for visiting our AI Assistant
         </p>
         <p className="lead">
           {loading ? "Generating Results....." : MLModelData}
