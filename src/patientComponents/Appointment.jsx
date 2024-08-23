@@ -27,7 +27,7 @@ const Appointment = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-
+  const [refresh, setRefresh] = useState(false);
   // Fetch appointments from the API
   const fetchAppointments = async () => {
     setLoading(true);
@@ -41,6 +41,7 @@ const Appointment = () => {
       });
       console.log(response.data.data);
       setAppointments(response.data.data);
+      setRefresh(!refresh);
     } catch (error) {
       setError("Error fetching appointments");
     } finally {
@@ -98,6 +99,7 @@ const Appointment = () => {
       setTime("");
       setDate("");
       setSuccess("Appointment added successfully");
+      fetchAppointments()
     } catch (error) {
       setError("Error adding appointment");
     } finally {
@@ -153,6 +155,7 @@ const Appointment = () => {
         )
       );
       setSuccess("Appointment updated successfully");
+      fetchAppointments()
     } catch (error) {
       console.error("Update Error:", error); // Debugging error
       setError("Error updating appointment");
