@@ -30,6 +30,7 @@ export default function MyApp() {
   const [disabilityForAnalyzeButton, setDisabilityForAnalyzeButton] =
     useState(true);
   const [dateEntryCounts, setDateEntryCounts] = useState({});
+  const [dateEntry, setDateEntry] = useState(false);
 
   useEffect(() => {
     const options = {
@@ -176,6 +177,7 @@ export default function MyApp() {
       console.log(res.data.result, "MLModelData");
 
       setLoading(false);
+      setDateEntry(true);
     } catch (error) {
       setLoading(false);
       console.log("error: ", error);
@@ -184,9 +186,9 @@ export default function MyApp() {
 
   return (
     <>
-     <Typography className="text-center" variant="h4" gutterBottom>
-          Blood Pressure
-        </Typography>
+      <Typography className="text-center" variant="h4" gutterBottom>
+        Blood Pressure
+      </Typography>
       <Box>
         <Calendar
           className="w-100"
@@ -197,7 +199,7 @@ export default function MyApp() {
             return view === "month" && count > 0 ? (
               <div style={{ textAlign: "center", marginTop: "5px" }}>
                 <span
-                className="rounded-circle"
+                  className="rounded-circle"
                   style={{
                     backgroundColor: "#3f51b5",
                     color: "#fff",
@@ -324,6 +326,14 @@ export default function MyApp() {
                 No data available for the selected date.
               </Typography>
             )}
+          </div>
+          <div>
+            {dateEntry ? (
+              <>
+                <h1 className="mt-2">Chances for Diabetes</h1>
+                <Typography variant="body1">{mlModelData}</Typography>
+              </>
+            ) : null}
           </div>
         </Box>
       </Modal>
