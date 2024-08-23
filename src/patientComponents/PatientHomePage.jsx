@@ -56,7 +56,7 @@ const PatientHomePage = () => {
     }
   };
 
-  //Fetch all User data
+  //Fetch User data
   const userData = async () => {
       const token = JSON.parse(localStorage.getItem("token"));
       try {

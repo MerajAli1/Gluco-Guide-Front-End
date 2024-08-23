@@ -8,6 +8,8 @@ import {
   Grid,
 } from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { BaseURL } from "../apiBaseURL/BaseURL";
+import axios from "axios";
 
 const lowDietarySuggestions = [
   {
@@ -174,9 +176,10 @@ const DietarySuggestion = () => {
     "No specific dietary suggestions available."
   );
   const [dietarySuggestions, setDietarySuggestions] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
+  const MLModelData = localStorage.getItem("MLModelData");
   useEffect(() => {
-    const MLModelData = localStorage.getItem("MLModelData");
     if (MLModelData) {
       const lowerCaseData = MLModelData.toLocaleLowerCase();
       if (lowerCaseData.includes("low")) {
@@ -201,7 +204,7 @@ const DietarySuggestion = () => {
       setSuggestions("No data available.");
     }
     setLoading(false);
-  }, []);
+  }, [MLModelData]);
 
   return (
     <Container className="mt-5">
@@ -220,26 +223,22 @@ const DietarySuggestion = () => {
         <Typography variant="body1" className="mb-4">
           {suggestions}
         </Typography>
-        {loading ? (
-          <Typography variant="body1">Generating Diet...</Typography>
-        ) : (
-          <Grid container spacing={3}>
-            {dietarySuggestions.map((suggestion) => (
-              <Grid item xs={12} sm={6} md={4} key={suggestion.id}>
-                <Card style={{ height: "100%" }}>
-                  <CardContent>
-                    <Typography variant="h6" component="div">
-                      {suggestion.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {suggestion.description}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        )}
+        <Grid container spacing={3}>
+          {dietarySuggestions.map((suggestion) => (
+            <Grid item xs={12} sm={6} md={4} key={suggestion.id}>
+              <Card style={{ height: "100%" }}>
+                <CardContent>
+                  <Typography variant="h6" component="div">
+                    {suggestion.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {suggestion.description}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     </Container>
   );

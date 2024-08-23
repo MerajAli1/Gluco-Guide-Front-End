@@ -347,6 +347,8 @@ export default function PersistentDrawerLeft() {
             localStorage.removeItem("token");
             localStorage.removeItem("profile data");
             localStorage.removeItem("MLModelData");
+            localStorage.removeItem("selectedRoute");
+            localStorage.removeItem("email");
             navigate("/login");
           }}
           variant="contained"

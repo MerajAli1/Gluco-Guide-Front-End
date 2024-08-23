@@ -4,11 +4,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { BaseURL } from "../apiBaseURL/BaseURL";
 import { toast, ToastContainer } from "react-toastify";
+
 const UploadMedicalDocument = () => {
   const [medicalDocument, setMedicalDocument] = useState("");
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
+
   const addDocument = async (e) => {
     e.preventDefault();
     if (!medicalDocument) {
@@ -18,13 +20,9 @@ const UploadMedicalDocument = () => {
     try {
       setLoading(true);
       const token = JSON.parse(localStorage.getItem("token"));
-      // console.log("token", token);
-      
       const res = await axios.post(
         `${BaseURL}/user/uploaddocument`,
-        {
-            medicalDocument,
-        },
+        { medicalDocument },
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -32,7 +30,7 @@ const UploadMedicalDocument = () => {
           },
         }
       );
-      toast.success("Registration Successful");
+      toast.success("Document Added Successfully");
       setLoading(false);
       setMedicalDocument(""); // Clear the selected document
       getAllDocuments(); // Refresh the list of documents
@@ -40,28 +38,44 @@ const UploadMedicalDocument = () => {
     } catch (error) {
       console.log("error: ", error);
     }
-    // console.log(medicalDocument.name);
   };
+
   const getAllDocuments = async () => {
     try {
       const token = JSON.parse(localStorage.getItem("token"));
-      // console.log("token", token);
-
       const res = await axios.get(`${BaseURL}/user/getdocuments`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      // console.log(res.data.data);
       setDocuments(res.data.data);
-      // setRefresh(!refresh);
     } catch (error) {
       console.log("error: ", error);
     }
   };
+
+  const deleteDocument = async (id) => {
+    try {
+      const token = JSON.parse(localStorage.getItem("token"));
+      await axios.delete(`${BaseURL}/document/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setDocuments((prevDocuments) =>
+        prevDocuments.filter((document) => document._id !== id)
+      );
+      toast.success("Document Deleted Successfully");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to Delete Document");
+    }
+  };
+
   useEffect(() => {
     getAllDocuments();
   }, [refresh]);
+
   return (
     <Container className="mt-5">
       <Box
@@ -75,7 +89,6 @@ const UploadMedicalDocument = () => {
       >
         <form onSubmit={(e) => addDocument(e)}>
           <h2 className="mb-4">Upload Medical Document</h2>
-
           <TextField
             onChange={(e) => setMedicalDocument(e.target.files[0])}
             fullWidth
@@ -94,7 +107,7 @@ const UploadMedicalDocument = () => {
           </Button>
         </form>
       </Box>
-      {/* // Displaying the uploaded documents */}
+      {/* Displaying the uploaded documents */}
       <Box
         className="mt-4"
         style={{
@@ -106,18 +119,24 @@ const UploadMedicalDocument = () => {
       >
         <h3 className="mb-4">Uploaded Documents</h3>
         <List>
-          {documents?.map((e, i) => {
-            return (
-              <div key={i}>
-                <h4>{i + 1} Medical Document</h4>
-                <div className="row">
-                  <div className="col-md-4">
-                    <img width={"100%"} src={e.document} alt="" />
-                  </div>
+          {documents?.map((e, i) => (
+            <div key={i}>
+              <h4>{i + 1} Medical Document</h4>
+              <div className="row">
+                <div className="col-md-4">
+                  <img width={"100%"} src={e.document} alt="" />
+                  <Button
+                    onClick={() => deleteDocument(e._id)}
+                    variant="contained"
+                    sx={{ mt: 3 }}
+                    color="error"
+                  >
+                    Delete
+                  </Button>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </List>
       </Box>
       {/* Toastify */}
